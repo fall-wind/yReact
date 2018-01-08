@@ -1,22 +1,15 @@
-import { y, mount, Component } from './lib/index'
-const containerNode = document.getElementById('app')
+import y from './src/y'
+import mount from './src/mount'
+import Component from './src/component'
 
-function App(props) {
-    return (
-        <div>{props.name}</div>
-    )
+export default {
+    y,
+    mount,
+    Component,
 }
 
-class TopApp extends Component {
-    render() {
-        const { children } = this.props
-        return (
-            <div>
-                <App name="hello" />
-            </div>
-        )
-    }
+export {
+    y,
+    mount,
+    Component,
 }
-
-// mount(<TopApp />, containerNode)
-mount(<App name="a hah" />, containerNode)
