@@ -8,6 +8,7 @@ export default function y(type, props = {}, ...args) {
     if (!Array.isArray(children)) {
         children = [children]
     }
+    // console.error(children, args, 'wocao???')
     children = children.filter(Boolean)
     return {
         type,

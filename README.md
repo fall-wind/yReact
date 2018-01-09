@@ -25,6 +25,7 @@ npm install yreact --save
 ## update log
 
 ### 0.0.1
+set up the environment to develop the project  
 just support mount into dom
 
 - not support lifecycle

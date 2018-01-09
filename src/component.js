@@ -1,14 +1,11 @@
 class Component {
-    constructor(props, state) {
+    constructor(props) {
         this.props = props
-        this.state = state
-        this.setState = function(state) {
-            this.state = {
-                ...this.state,
-                ...state,
-            }
-        }
     }
+
+    // setState(state, callback) {
+    //     console.error(this, state, this.state, this.prototype)
+    // }
 
     render() {
 
@@ -16,6 +13,10 @@ class Component {
 }
 
 Component.prototype.isReactComponent = true
-Component.isReactComponent = true
+// Component.isReactComponent = true
+
+Component.prototype.setState = function(state, callback) {
+    console.error(this, state, this.state, this.prototype)
+}
 
 export default Component
