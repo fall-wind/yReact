@@ -9,7 +9,6 @@ export default function y(type, props = {}, ...args) {
         children = [children]
     }
     children = children.filter(Boolean)
-
     return {
         type,
         props: {
