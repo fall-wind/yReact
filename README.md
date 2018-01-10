@@ -4,9 +4,11 @@ a simple react
 ```
 git clone https://github.com/yt1520406335/yReact.git
 
-<!-- npm run start -->
+cd example/helloWorld/
 
-open browser
+npm run start
+
+open your browser
 ```
 
 ### use npm 
@@ -14,7 +16,7 @@ open browser
 ```
 npm install yreact --save
 ```
-#### babel config
+### babel config
 
 ```
 "plugins": [
@@ -24,7 +26,8 @@ npm install yreact --save
 ]
 ```
 
-#### use in project (l suggest you should use... a ha)
+### use in project (l suggest you should use... a ha)
+
 ```
 import { render, Component } from 'yreact'
 const containerNode = document.getElementById('app')
@@ -88,6 +91,9 @@ render(<TopApp />, containerNode)
 - [preact](https://github.com/developit/preact)
 - [tinyreact](https://github.com/ykforerlang/tinyreact) from my old-big-borther
 
+### issue
+
+[new a issue](https://github.com/yt1520406335/yReact/issues/new)
 
 ## update log
 
@@ -97,9 +103,13 @@ just support mount into dom
 
 - not support lifecycle
 - not support event
+- not support Function component
 - other
 
 ### 0.0.2
 
 - support setState
 - There are still a lot of problems.
+
+### 0.0.3
+- modify README.md
