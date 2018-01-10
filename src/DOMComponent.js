@@ -25,7 +25,7 @@ class DOMComponent {
 
         // remove old attr
         Object.keys(prevProps).forEach(propsName => {
-            if (prevProps !== 'children' && !nextProps.hasOwnProperty(propsName)) {
+            if (propsName !== 'children' && !nextProps.hasOwnProperty(propsName)) {
                 node.removeAttribute(propsName)
             }
         })

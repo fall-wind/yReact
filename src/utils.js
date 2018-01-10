@@ -27,8 +27,6 @@ export function setNodeAttr(node, props) {
 			} else if (propsKey === 'className') {
 				node.setAttribute('class', value)
 			} else if (propsKey === 'style') {
-				console.error('??????XXXX')
-				// node.setAttribute('cssText', props[propsKey])
 				if (typeof value === 'string') {
 					node.style.cssText = value
 				}
@@ -40,7 +38,8 @@ export function setNodeAttr(node, props) {
 				const capture = (propsKey.indexOf("Capture") != -1)
 				if (value) {
 					node.addEventListener(propsKey, eventProxy, capture)
-				} else {
+				}
+				else {
 					node.removeEventListener(propsKey, eventProxy, capture)
 				}
 				(node._listeners || (node._listeners = {}))[propsKey] = value;
@@ -53,4 +52,37 @@ export function setNodeAttr(node, props) {
 
 export function eventProxy(e) {
 	return this._listeners[e.type](e);
+}
+
+export function getComponetDom(Comp) {
+	let renderedChildren = Comp
+	while (renderedChildren.isReactComponent) {
+		renderedChildren = renderedChildren.__renderedChildren
+	}
+	return renderedChildren
+}
+
+export function setOldDomProps(node, pervProps, nextProps) {
+	Object.keys(prevProps).forEach(propsName => {
+		if (propsName !== 'children' && !nextProps.hasOwnProperty(propsName)) {
+			node.removeAttribute(propsName)
+		}
+	})
+	setNodeAttr(node, props)
+}
+
+export function getNodeProps(vnode) {
+	let props = extend({}, vnode.attributes);
+	props.children = vnode.children;
+
+	let defaultProps = vnode.nodeName.defaultProps;
+	if (defaultProps!==undefined) {
+		for (let i in defaultProps) {
+			if (props[i]===undefined) {
+				props[i] = defaultProps[i];
+			}
+		}
+	}
+
+	return props;
 }

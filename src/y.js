@@ -9,7 +9,7 @@ export default function y(type, props = {}, ...args) {
         children = [children]
     }
     // console.error(children, args, 'wocao???')
-    children = children.filter(Boolean)
+    // children = children.filter(Boolean)
     return {
         type,
         props: {

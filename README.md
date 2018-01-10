@@ -31,3 +31,8 @@ just support mount into dom
 - not support lifecycle
 - not support event
 - other
+
+### 0.0.2
+
+- support setState
+- a lot of problems

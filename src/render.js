@@ -1,63 +1,102 @@
-import { isClass, setNodeAttr } from './utils'
+import { getNodeProps, isClass, setNodeAttr } from './utils'
 
-export function render(element, containerNode) {
-    
-    const type = element.type
-    const props = element.props
-    if (typeof element === 'string') {
-        let node = document.createTextNode(element)
-        containerNode.appendChild(node)
-    } else if (typeof type == "string") {
-        let node = document.createElement(type)
-        setNodeAttr(node, props)
-        containerNode.appendChild(node)
-        const children = props.children
-        children.forEach(child => {
-            render(child, node)
-        })
-    } else if (typeof type === 'function') {
-        if (isClass(type)) {
-            const instance = new type(props)
-            const subElement = instance.render()
-            render(subElement, containerNode)
-        } else {
-            const subElement = type(props)
-            render(subElement, containerNode)
-        }
-    }
+export default function render(element, parent) {
+    renderSub(element, parent)
 }
 
-export function renderVDom(element) {
-    const type = element.type
-    const props = element.props
-    // console.error(element)
-    if (typeof element === 'string') {
-        return element
-    }
-    else if (typeof type === 'string') {
-        const children = (props.children || []).filter(Boolean)
-        const hasChildrenEle = {
-            type,
-            props,
-            children: [],
-        }
-        for (let i = 0; i< children.length; i++) {
-            hasChildrenEle.children.push(renderVDom(children[i]))
-        }
-        return hasChildrenEle
-    } else if (typeof type === 'function') {
-        if (isClass(type)) {
-            const instance = new type(props)
-            const childElement = instance.render()
-            return renderVDom(childElement)
-        } else {
-            return renderVDom(type(props))
-        }
+function renderTextElement(element, oldDom) {
+    console.error(element, oldDom)
+    if (oldDom && element != oldDom.nodeValue) {
+        oldDom.nodeValue = element
+        return oldDom
     } else {
-        console.error('else no match')
+        const node = document.createTextNode(element)
+        return node
     }
 }
 
-export default function yRender(element, containerNode) {
-    render(renderVDom(element), containerNode)
+// 真实节点的prevProps 与 nextProps
+function renderHostElement(element, oldDom) {
+    let node = oldDom
+    if (node) {
+        console.error('?????', node, element.props)
+        setNodeAttr(node, element.props)
+        const vchildren = element.props.children
+        console.error(node, node.childNodes)
+        vchildren.map((child, index) => {
+            return renderSub(child, node, node.childNodes[index])
+        })
+    } else {
+        node = document.createElement(element.type)
+        setNodeAttr(node, element.props)
+        const vchildren = element.props.children
+        vchildren.map(child => {
+            return renderSub(child, node, oldDom)
+        })
+    }
+    return node
+}
+
+function createComponent() {
+
+}
+
+export function renderComponentElement(component, parent, isChild) {
+    let base = component.base
+    let inst
+    if (base) {
+        if (component.componentWillUpdate) {
+            component.componentWillUpdate()
+        }
+    } 
+    if (component.isReactComponent) {
+        if (component.componentWillMount) {
+            component.componentWillMount()
+        }
+        const childElement = component.render()
+        const childComponent = childElement && childElement.type
+        if (isClass(childElement)) {
+            const childProps = getNodeProps(childElement)
+            component._component = inst = new type({...childProps, ...childElement.props})
+            inst._parentComponent = component
+            renderComponentElement(inst)
+        } else {
+            base = renderSub(childElement, parent, base)
+        }
+    }
+    component.base = base
+    if (base) {
+        let componentRef = component,
+            t = component;
+        while ((t=t._parentComponent)) {
+            (componentRef = t).base = base;
+        }
+        base._component = componentRef;
+        base._componentConstructor = componentRef.constructor;
+    }
+    // return base
+}
+
+export function renderSub(element, parent, oldDom) {
+    // 如果为字符串
+    let node
+    if (element==null || typeof element==='boolean') element = ''
+    console.error(element, 'ssss')
+    if (typeof element === 'string') {
+        node = renderTextElement(element, oldDom)
+    } else if (typeof element.type === 'string') {
+        node = renderHostElement(element, oldDom)
+    } else if (typeof element.type === 'function') {
+        const props = element.props
+        const type = element.type
+        const component = new type(props)
+        renderComponentElement(component, parent)
+        node = component.base
+    }
+    if (oldDom) {
+        oldDom.parentNode.replaceChild(node, oldDom)
+    } else {
+        parent.appendChild(node)
+    }
+    return node
 }
