@@ -1,12 +1,5 @@
-import { y, mount, Component } from '../../index'
-import render from '../../src/render'
+import { y, render, Component } from '../../index'
 const containerNode = document.getElementById('app')
-
-function App(props) {
-    return (
-        <div style={{ color: 'red' }}>{props.name}</div>
-    )
-}
 
 class SubApp extends Component {
     constructor(props) {
@@ -67,5 +60,3 @@ class TopApp extends Component {
 }
 
 render(<TopApp />, containerNode)
-// mount(<TopApp />, containerNode)
-// mount(<App name="a hah" />, containerNode)

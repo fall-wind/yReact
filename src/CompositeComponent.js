@@ -1,3 +1,4 @@
+// temporarily discarded
 import { isClass } from './utils'
 import { instantiateComponent } from './mount'
 class CompositeComponent {

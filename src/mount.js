@@ -1,5 +1,6 @@
-// 来自react的官方的implementation notes
-// 玩不下去。。。。。
+// from the official implementation notes
+// Continue not to go on
+// undetermined
 import { isClass, setNodeAttr } from './utils'
 import CompositeComponent from './CompositeComponent'
 import DOMComponent from './DOMComponent'

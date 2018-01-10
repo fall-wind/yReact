@@ -1,3 +1,4 @@
+// temporarily discarded
 import { isClass, setNodeAttr, setOldDomProps } from './utils'
 
 // just render

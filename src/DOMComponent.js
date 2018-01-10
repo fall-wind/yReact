@@ -1,5 +1,6 @@
+// temporarily discarded
 import { setNodeAttr, eventProxy } from './utils'
-// 有点像循环引用 怎么可以工作？
+// It seems to be a circular reference
 import { instantiateComponent } from './mount'
 class DOMComponent {
     constructor(element) {
