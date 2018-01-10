@@ -8,6 +8,23 @@ function App(props) {
     )
 }
 
+class SubApp extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+        }
+    }
+
+    render() {
+        const {name} = this.props
+        return (
+            <div>
+                {name}
+            </div>
+        )
+    }
+}
+
 class TopApp extends Component {
 
     constructor(props) {
@@ -18,23 +35,32 @@ class TopApp extends Component {
     }
 
     componentWillMount(props) {
-        console.error(props, 'componentWillMount...')
+        // console.error(props, 'componentWillMount...')
     }
 
     componentWillUpdate(props){
-        console.info('componentWillUpdate:')
+        // console.info('componentWillUpdate:')
     }
 
     render() {
         const { children } = this.props
         const { name } = this.state
         return (
-            <div onClick={(e) => {
-                this.setState({
-                    name: 'hello'
-                })
-            }}>
-                <App name={name} />
+            <div>
+                <input 
+                    onChange={e => {
+                        this.setState({
+                            name: e.target.value
+                        })
+                    }}
+                    value={name}
+                    style={{ border: '1px solid black' }}
+                />
+                <div>
+                    {name}
+                </div>
+                {/* <SubApp name={`name: ${name}`}/>
+                <SubApp name={`name: ${name}`}/> */}
             </div>
         )
     }
