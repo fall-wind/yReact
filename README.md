@@ -26,7 +26,7 @@ npm install yreact --save
 ]
 ```
 
-### use in project (l suggest you should use... a ha)
+### use in project (l suggest you should not use... a ha)
 
 ```
 import { render, Component } from 'yreact'
