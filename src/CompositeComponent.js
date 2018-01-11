@@ -30,6 +30,7 @@ class CompositeComponent {
             }
             
             publicInstance.props = nextProps
+            publicInstance.__component = this
             nextRenderedElement = publicInstance.render()
         } else if (typeof type === 'function') {
             nextRenderedElement = type(nextProps)
