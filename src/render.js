@@ -1,11 +1,10 @@
-import { getNodeProps, isClass, setNodeAttr } from './utils'
+import { getNodeProps, isClass, setNodeAttr, setNodeAttrWithOld } from './utils'
 
 export default function render(element, parent) {
     renderSub(element, parent)
 }
 
 function renderTextElement(element, oldDom) {
-    console.error(element, oldDom)
     if (oldDom && element != oldDom.nodeValue) {
         oldDom.nodeValue = element
         return oldDom
@@ -16,33 +15,69 @@ function renderTextElement(element, oldDom) {
 }
 
 // 真实节点的prevProps 与 nextProps
-function renderHostElement(element, oldDom) {
+// add
+// replace
+// delete
+// pervProps --> attr; nextProps --> element.props
+function renderHostElement(element, oldDom, parent) {
     let node = oldDom
     if (node) {
-        console.error('?????', node, element.props)
-        setNodeAttr(node, element.props)
-        const vchildren = element.props.children
-        console.error(node, node.childNodes)
-        vchildren.map((child, index) => {
-            return renderSub(child, node, node.childNodes[index])
-        })
+        // setNodeAttr(node, element.props)
+        if (node.nodeName.toLocaleLowerCase() === element.type) {
+            diffNode(node, element)
+        } else {
+            setNodeAttr(node, element.props)
+        }
     } else {
         node = document.createElement(element.type)
         setNodeAttr(node, element.props)
-        const vchildren = element.props.children
-        vchildren.map(child => {
-            return renderSub(child, node, oldDom)
-        })
+        // const vchildren = element.props.children
+        // vchildren.map(child => {
+        //     return renderSub(child, node, oldDom)
+        // })
     }
+    const vchildren = element.props.children
+    // console.error(node, node.childNodes)
+    vchildren.map((child, index) => {
+        return renderSub(child, node || parent, node.childNodes[index])
+    })
     return node
 }
 
-function createComponent() {
+function diffInnerNodes(dom, vChildren) {
+    const childNodes = dom.childNodes
+    console.error(childNodes, 'diffInnerNodes: ')
+}
 
+/**
+ * remove oldprop that not exist
+ * set newprops
+ * if event remove listener
+ * // todo: children
+ * @param {*} oldNode 
+ * @param {*} props 
+ */
+function diffNode(oldNode, element) {
+    const props = element.props
+    const attrs = oldNode.attributes
+    Object.keys(attrs).forEach(attr => {
+        const val = attrs[attr]
+        const { nodeName, nodeValue } = val
+        if (!props.hasOwnProperty(nodeName)) {
+            setNodeAttrWithOld(oldNode, nodeName, nodeValue, props[nodeName])
+        }
+    })
+    const children = element.children
+    if (children && children.length > 0) {
+        // diffInnerNodes(oldNode, children)
+    }
+
+    setNodeAttr(oldNode, props)
 }
 
 export function renderComponentElement(component, parent, isChild) {
     let base = component.base
+    let initBase = base
     let inst
     if (base) {
         if (component.componentWillUpdate) {
@@ -64,6 +99,15 @@ export function renderComponentElement(component, parent, isChild) {
             base = renderSub(childElement, parent, base)
         }
     }
+    if (initBase) {
+        if (component.componentDidUpdate) {
+            component.componentDidUpdate()
+        }
+    } else {
+        if (component.componentDidMount) {
+            component.componentDidMount()
+        }
+    }
     component.base = base
     if (base) {
         let componentRef = component,
@@ -81,17 +125,24 @@ export function renderSub(element, parent, oldDom) {
     // 如果为字符串
     let node
     if (element==null || typeof element==='boolean') element = ''
-    console.error(element, 'ssss')
-    if (typeof element === 'string') {
+    if (typeof element === 'string' || typeof element === 'number') {
         node = renderTextElement(element, oldDom)
     } else if (typeof element.type === 'string') {
-        node = renderHostElement(element, oldDom)
+        node = renderHostElement(element, oldDom, parent)
     } else if (typeof element.type === 'function') {
         const props = element.props
         const type = element.type
-        const component = new type(props)
-        renderComponentElement(component, parent)
-        node = component.base
+        // console.error('l am function', type, props)
+        if (isClass(type)) {
+            const component = new type(props)
+            renderComponentElement(component, parent)
+            node = component.base
+        } else {
+            const component = type(props)
+            node = renderSub(component, parent)
+        }
+    } else {
+        console.log('type not exist?????')
     }
     if (oldDom) {
         oldDom.parentNode.replaceChild(node, oldDom)
@@ -99,4 +150,21 @@ export function renderSub(element, parent, oldDom) {
         parent.appendChild(node)
     }
     return node
+}
+
+/**
+ * 
+ * @param {*} component 
+ */
+function ummountComponent(component) {
+    let base = component.base
+    if (component.componentWillUnmount) {
+        component.componentWillUnmount()
+    }
+    const inner = component._component
+    if (inner) {
+        ummountComponent(inner)
+    } else if (base) {
+
+    }
 }

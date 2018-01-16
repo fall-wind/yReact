@@ -17,14 +17,8 @@ class Component {
             ...this.state,
             ...newStateObj,
         }
-        console.error(this.base, this.base.parentNode)
         renderComponentElement(this, this.base.parentNode)
-        // const element = this.render()
-        // const dom = getComponetDom(this)
-        // const parentNode = dom.parentNode
-        // console.error(this.__renderedChildren)
-        // renderSub(element, parentNode, this, this.__renderedChildren)
-        // console.error(this, this.PPPP)
+        callback && callback(this.props, state)
     }
 
     // setState(state, callback) {

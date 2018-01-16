@@ -17,7 +17,28 @@ export function extend(obj, props) {
 	return obj;
 }
 
-//
+/**
+ * remove old listener
+ * @param {*} node 
+ * @param {*} propsName 
+ * @param {*} oldValue 
+ * @param {*} newValue 
+ */
+export function setNodeAttrWithOld(node, propsName, oldValue) {
+	if (propsName === 'className') propsName = 'class'
+	console.error(propsName)
+	if (propsName[0] === 'o' && propsName[1] === 'n') {
+		propsName = propsName.slice(2).toLowerCase()
+		if (oldValue) {
+			node.removeEventListener(propsKey, eventProxy, capture)
+			delete node._listeners[propsName]
+		}
+	} else {
+		node.removeAttribute(propsName)
+	}
+}
+
+// 
 export function setNodeAttr(node, props) {
 	Object.keys(props).forEach(propsKey => {
 		const value = props[propsKey]
